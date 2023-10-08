@@ -5,23 +5,28 @@ from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
+
 def garch_x_model(df):
-    model = arch_model(df['Close'], x=df[['Volume', 'High', 'SMA', 'EMA']], vol='Garch')
+    model = arch_model(
+        df['Close'], x=df[['Volume', 'High', 'SMA', 'EMA']], vol='Garch')
     result = model.fit(disp='off')
     return result.conditional_volatility
 
 
-def cal_volatility(symbol, key):
-    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={}&apikey={}&outputsize=full'.format(symbol, key)
-    url_sma = 'https://www.alphavantage.co/query?function=SMA&symbol={}&interval=daily&time_period=10&series_type=open&apikey={}'.format(symbol, key)
-    url_ema = 'https://www.alphavantage.co/query?function=EMA&symbol={}&interval=daily&time_period=10&series_type=open&apikey={}'.format(symbol, key)
-    
+def cal_volatility(symbol, key="RX10ZG3VHVU5UMXC"):
+    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={}&apikey={}&outputsize=full'.format(
+        symbol, key)
+    url_sma = 'https://www.alphavantage.co/query?function=SMA&symbol={}&interval=daily&time_period=10&series_type=open&apikey={}'.format(
+        symbol, key)
+    url_ema = 'https://www.alphavantage.co/query?function=EMA&symbol={}&interval=daily&time_period=10&series_type=open&apikey={}'.format(
+        symbol, key)
+
     r = requests.get(url)
     data = r.json()
-    print(data)
     time_series_data = data['Time Series (Daily)']
 
-    df = pd.DataFrame(time_series_data).T  # Transpose the DataFrame to have dates as rows
+    # Transpose the DataFrame to have dates as rows
+    df = pd.DataFrame(time_series_data).T
     df.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
     df = df.apply(pd.to_numeric)  # Convert columns to numeric
     df['Date'] = pd.to_datetime(df.index)
@@ -49,7 +54,6 @@ def cal_volatility(symbol, key):
     sma_df['SMA'] = sma_df['SMA'].astype(float)
     sma_df.reset_index(inplace=True)
     sma_df.rename(columns={'index': 'Date'}, inplace=True)
-
 
     df['Date'] = pd.to_datetime(df['Date'])
     sma_df['Date'] = pd.to_datetime(sma_df['Date'])
@@ -84,25 +88,28 @@ def cal_volatility(symbol, key):
     rmse = mean_squared_error(y_test, y_pred, squared=False)
 
     last_date = merged_df['Date'][0]
-    future_dates = pd.date_range(last_date, periods=11, freq='B')[1:]  # Generate 10 future dates starting from the next business day
-    future_volatility = garch_x_model(merged_df)  # Assuming last 20 days are available for prediction
+    # Generate 10 future dates starting from the next business day
+    future_dates = pd.date_range(last_date, periods=11, freq='B')[1:]
+    # Assuming last 20 days are available for prediction
+    future_volatility = garch_x_model(merged_df)
     if len(future_dates) > len(future_volatility):
-        future_dates = future_dates[:-1]  
+        future_dates = future_dates[:-1]
     future_features = pd.DataFrame({
-        'Close': [merged_df['Close'].iloc[-1]] * len(future_dates),  
+        'Close': [merged_df['Close'].iloc[-1]] * len(future_dates),
         'Volatility': future_volatility,
     }, index=future_dates)
     predicted_closing_prices = xgb_model.predict(future_features)
 
-    predicted_closing_price=predicted_closing_prices[-1]
-    predicted_date=future_dates[-1]
-    
+    predicted_closing_price = predicted_closing_prices[-1]
+    predicted_date = future_dates[-1]
+
     result = {
         "merged_df": merged_df.to_dict(),
         "predicted_closing_price": predicted_closing_price,
         "predicted_date": predicted_date.strftime('%Y-%m-%d')
     }
-    
+
     return result
 
-print(type(cal_volatility('PTIX', 'P3B4DV2OFJBH60IG')))
+
+# print(type(cal_volatility('PTIX', 'P3B4DV2OFJBH60IG')))

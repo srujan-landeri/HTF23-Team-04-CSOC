@@ -36,11 +36,11 @@ def get_data(symbol, function=None):
 
 
 def choose_model(symbol):
-    if symbol in map(lambda x: x["symbol"], LARGE_CAP):
+    if symbol in map(lambda x: x["Symbol"], LARGE_CAP):
         return "large_cap"
-    elif symbol in map(lambda x: x["symbol"], MID_CAP):
+    elif symbol in map(lambda x: x["Symbol"], MID_CAP):
         return "mid_cap"
-    elif symbol in map(lambda x: x["symbol"], SMALL_CAP):
+    elif symbol in map(lambda x: x["Symbol"], SMALL_CAP):
         return "small_cap"
     else:
         return None
