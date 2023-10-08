@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from data_processing import get_data
+from data_processing import get_data, choose_model
 
 app = Flask(__name__)
 
@@ -15,6 +15,15 @@ def hello_world():
 @app.route('/data_chart/<string:symbol>/<string:func>')
 def data_chart(symbol, func=None):
     return jsonify(get_data(symbol, func))
+
+
+# for model return
+# @app.route('/model/<string:symbol>')
+# def model(symbol):
+#     result = call_model_function(choose_model(symbol))
+#     # result of model should be in json format, (list of objects)
+
+#     return jsonify(result)
 
 
 if __name__ == '__main__':

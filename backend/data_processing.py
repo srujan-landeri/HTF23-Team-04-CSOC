@@ -1,4 +1,16 @@
 import requests
+from json import load
+
+FILE = "../data/{}.json"
+
+with open(FILE.format("large_cap"), "r") as f:
+    LARGE_CAP = load(f)["data"]
+
+with open(FILE.format("medium_cap"), "r") as f:
+    MID_CAP = load(f)["data"]
+
+with open(FILE.format("small_cap"), "r") as f:
+    SMALL_CAP = load(f)["data"]
 
 
 def get_data(symbol, function=None):
@@ -21,3 +33,14 @@ def get_data(symbol, function=None):
         f"Technical Analysis: {function.upper()}"]
 
     return [{"date": k, "val": float(v[function.upper()])} for k, v in d.items()]
+
+
+def choose_model(symbol):
+    if symbol in map(lambda x: x["symbol"], LARGE_CAP):
+        return "large_cap"
+    elif symbol in map(lambda x: x["symbol"], MID_CAP):
+        return "mid_cap"
+    elif symbol in map(lambda x: x["symbol"], SMALL_CAP):
+        return "small_cap"
+    else:
+        return None
