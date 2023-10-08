@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential,load_model
 from tensorflow.keras.layers import GRU, Dense
 import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
@@ -11,8 +11,8 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import requests
 
-def predict(data):
-  url = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=PTIX&apikey=P3B4DV2OFJBH60IG&outputsize=full'
+def predict(data,company):
+  url = f'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol={company}&apikey=P3B4DV2OFJBH60IG&outputsize=full'
   r = requests.get(url)
   data = r.json()
   # Extract the time series data
