@@ -11,27 +11,25 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import requests
 
-url = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=PTIX&apikey=P3B4DV2OFJBH60IG&outputsize=full'
-r = requests.get(url)
-data = r.json()
-print(data)
-# Extract the time series data
-time_series_data = data['Weekly Time Series']
-
-# Convert the data to a pandas DataFrame
-df = pd.DataFrame(time_series_data).T  # Transpose the DataFrame to have dates as rows
-
-# Rename the columns for better clarity
-df.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
-
-# Convert the data types to appropriate types
-df = df.apply(pd.to_numeric)  # Convert columns to numeric
-
-# Add a 'Date' column and set it as the index
-df['Date'] = pd.to_datetime(df.index)
-# df.set_index('Date', inplace=True)
-
 def predict(data):
+  url = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=PTIX&apikey=P3B4DV2OFJBH60IG&outputsize=full'
+  r = requests.get(url)
+  data = r.json()
+  # Extract the time series data
+  time_series_data = data['Weekly Time Series']
+  
+  # Convert the data to a pandas DataFrame
+  df = pd.DataFrame(time_series_data).T  # Transpose the DataFrame to have dates as rows
+  
+  # Rename the columns for better clarity
+  df.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+  
+  # Convert the data types to appropriate types
+  df = df.apply(pd.to_numeric)  # Convert columns to numeric
+  
+  # Add a 'Date' column and set it as the index
+  df['Date'] = pd.to_datetime(df.index)
+# df.set_index('Date', inplace=True)
   # Assuming you have a univariate time series of historical stock prices
   # Here, 'data["Close"]' is a 1D array representing past stock prices
   model = load_model('gru_model.h5')
