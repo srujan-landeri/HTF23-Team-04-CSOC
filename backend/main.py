@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from data_processing import get_data, choose_model
 from small_cap_model import cal_volatility
-
 app = Flask(__name__)
 
 
@@ -17,8 +16,9 @@ def hello_world():
 def data_chart(symbol, func=None):
     return jsonify(get_data(symbol, func))
 
-
 # for model return
+
+
 @app.route('/model/<string:symbol>')
 def model(symbol):
     chosed_model = choose_model(symbol)
