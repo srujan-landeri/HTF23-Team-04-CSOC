@@ -6,6 +6,10 @@
     font-family: 'Montserrat' , sans-serif;
 }
 
+html{
+    scroll-behavior: smooth;
+}
+
 .WelcomePage{
     height:100vh;
     display: flex;
@@ -86,3 +90,123 @@
     margin-top:15px;
     padding:10px 10px;
 }
+
+.HomePage{
+    height:100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin:0px 70px;
+    position: sticky;
+    top:0%;
+    padding:10px 0px;
+    background-color: white;
+}
+
+.main-header img{
+    height:70px;
+}
+
+.main-header nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 40%;
+}
+
+.main-header nav ul{
+    width:100px;
+    height:50px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    border-radius: 5px;    
+}
+
+.main-header nav ul:hover{
+    background-color: #FFD600;
+}
+
+.main-header nav .active{
+    background-color: #FFD600;
+}
+
+.body{
+    padding:40px 70px;
+}
+
+.Home{
+    display: flex;
+    flex-direction: column;
+}
+
+body::-webkit-scrollbar{
+    width: 10px;
+}
+
+body::-webkit-scrollbar-thumb{
+    background-color: #373736;
+}
+
+
+.home-header{
+    margin-block:20px;
+}
+
+.home-header h1{
+    font-weight: 500;
+    font-size: 40px;
+}
+
+.home-header p{
+    font-size: 16px;
+    font-weight: 300;
+    margin-top: 15px;
+    text-align: justify;
+    width:90%;
+    line-height: 25px;
+}
+
+.Home img{
+    width: 50%;
+    height:60vh;
+    margin: 0px 50px;
+    border-radius: 5%;
+}
+
+.Stocks{
+    display: flex;
+}
+
+.Stocks img{
+    width:28%;
+    margin-right:55px;
+}
+
+.stock-header{
+    margin-inline:auto;
+    width: 50%;
+}
+
+.stock-header div{
+    position: relative;
+}
+
+.stock-header div input{
+    height:20px;
+    width: 100%;
+    font-size:15px;
+    margin-top:15px;
+    border-radius: 10px;
+    border:none;
+    border:1px solid black;
+    padding:10px 10px;
+}
+

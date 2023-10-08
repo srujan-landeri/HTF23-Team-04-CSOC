@@ -1,6 +1,15 @@
 import React from "react";
 import StockImage from '../Assets/test.jpg'
 import Robo from '../Assets/robo.png'
+import { useNavigate } from 'react-router-dom';
+import {toast} from "react-toastify"
+import { auth } from '../firebase/firebase';
+import {
+    createUserWithEmailAndPassword,
+    updateProfile,
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail,
+} from 'firebase/auth';
 
 export default function WelcomePage(){
     
@@ -16,6 +25,8 @@ export default function WelcomePage(){
         email: '',
         password: ''
     })
+
+    const navigate = useNavigate();
 
     function handleFormChange(event) {
         if (form === "login") {
@@ -36,17 +47,75 @@ export default function WelcomePage(){
         }
     }
 
-    function userLogin(){
+    async function userLogin(){
 
-        console.log(signinData)
+        try
+        {const userCredential = await signInWithEmailAndPassword(
+            auth,
+            signinData.email,
+            signinData.password
+        )
+
+        if(userCredential.user){
+            toast.success("You are successfully signed in!");
+            navigate('/home');
+        }
+        else{
+            toast.error("Bad User Credential")
+        }}
+        catch(error){
+            let message = (error.message.split('/')[1]);
+            if(message === 'wrong-password).'){
+                toast.error('Incorrect Password. Try Again')
+            }
+            else if(message === 'user-not-found).'){
+                toast.error("User Not Found")
+            }
+            else if(message === "network-request-failed)."){
+                toast.error("Network Error")
+            }
+            else{
+                toast.error("Something went wrong")
+            }
+        }
 
     }
 
-    function userSignUp(){
+    async function userSignUp(){
 
-        console.log(registerData)
+        try{
+            await createUserWithEmailAndPassword(
+                auth,
+                registerData.email,
+                registerData.password
+            );
+    
+            updateProfile(auth.currentUser, {
+                displayName:registerData.name
+            })
+    
+            toast.success("You are Successfully Registered!")
+            navigate('/home');
+        }
+        catch(error){
+            toast.error("Something went wrong");
+        }
 
     }
+
+
+    async function handlePasswordReset(){
+        if(!signinData.email){
+            return toast.error('Email is required');
+        }
+        try {
+          // Send a password reset email using Firebase Auth
+          await sendPasswordResetEmail(auth, signinData.email);
+          toast.success('Password reset email sent! Check your inbox.');
+        } catch (error) {
+          toast.error('Password reset failed. Please try again.');
+        }
+      };
 
     return(
         <div className="WelcomePage">
@@ -77,7 +146,11 @@ export default function WelcomePage(){
                     <div className="login-form">
                         <input onChange={handleFormChange} name = "email" type="email" placeholder="Email" />
                         <input onChange={handleFormChange} name = "password" type="password" placeholder="Password" />
-                        <p onClick={() => setForm('signup')}>New User?</p>
+
+                        <div style={{display:'flex',width:'75%',marginTop:"10px"}}>
+                            <p style = {{textAlign:"left"}} onClick={handlePasswordReset}>Forgot Password?</p>
+                            <p onClick={() => setForm('signup')}>New User?</p>
+                        </div>
                         <button onClick = {userLogin} className="button login">Login</button>
                     </div>
                 )}
