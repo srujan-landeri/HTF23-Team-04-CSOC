@@ -9,9 +9,12 @@ def hello_world():
     return 'Hello, World!'
 
 
-@app.route('/data_chart/<string:func>/<string:symbol>')
-def data_chart(func, symbol):
-    return jsonify(get_data(func, symbol))
+# http://127.0.0.1:5000/data_chart/IBM
+@app.route('/data_chart/<string:symbol>')
+# http://127.0.0.1:5000/data_chart/IBM/SMA
+@app.route('/data_chart/<string:symbol>/<string:func>')
+def data_chart(symbol, func=None):
+    return jsonify(get_data(symbol, func))
 
 
 if __name__ == '__main__':

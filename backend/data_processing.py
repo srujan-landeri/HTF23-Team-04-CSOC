@@ -1,7 +1,7 @@
 import requests
 
 
-def get_data(function, symbol):
+def get_data(symbol, function=None):
     # TODO: bollinger bands and stoc
     URLS = {
         "SMA": "https://www.alphavantage.co/query?function=SMA&symbol={}&interval=weekly&time_period=10&series_type=open&apikey=RX10ZG3VHVU5UMXC",
@@ -10,6 +10,12 @@ def get_data(function, symbol):
         "OBV": 'https://www.alphavantage.co/query?function=OBV&symbol={}&interval=weekly&apikey=demo',
         "ROC": 'https://www.alphavantage.co/query?function=ROC&symbol={}&interval=weekly&time_period=10&series_type=close&apikey=demo'
     }
+
+    if function is None:
+        URL = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol={}&apikey=RX10ZG3VHVU5UMXC'
+        d = requests.get(URL.format(symbol)).json()[
+            "Weekly Time Series"]
+        return [{"date": k, **v} for k, v in d.items()]
 
     d = requests.get(URLS[function.upper()].format(symbol)).json()[
         f"Technical Analysis: {function.upper()}"]
