@@ -38,4 +38,4 @@ def large_cap(data):
   future_steps = 50 # Replace with the desired number of future steps
   forecast = model.predict(n_periods=future_steps)
 
-  return forecast
+  return forecast, data
