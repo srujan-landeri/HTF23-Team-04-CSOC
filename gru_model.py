@@ -32,7 +32,7 @@ def predict(data,company):
 # df.set_index('Date', inplace=True)
   # Assuming you have a univariate time series of historical stock prices
   # Here, 'data["Close"]' is a 1D array representing past stock prices
-  model = load_model('gru_model.h5')
+  model = load_model('gru_model_1.h5')
   
   sequence_length = 20  # Choose an appropriate sequence length
   num_features = 1  # For a univariate time series
